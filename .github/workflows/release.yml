@@ -45,11 +45,11 @@ jobs:
 
       # ---- Windows -------------------------------------------------------
       # Put MSVC (cl/link) on PATH for whatever VS the runner ships, so we're
-      # not pinned to a specific Visual Studio generator version.
-      # (No Node 24 release yet; GitHub runs it on Node 24 regardless.)
+      # not pinned to a specific Visual Studio generator version. (Maintained
+      # Node 24 reimplementation of ilammy/msvc-dev-cmd, same inputs.)
       - name: Set up MSVC (Windows)
         if: runner.os == 'Windows'
-        uses: ilammy/msvc-dev-cmd@v1
+        uses: TheMrMilchmann/setup-msvc-dev@v4
         with:
           arch: x64
 
