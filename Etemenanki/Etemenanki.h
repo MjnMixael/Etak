@@ -17,7 +17,7 @@
 #include <QStandardPaths>
 #include <QDesktopServices>
 #include <QFileDialog>
-#include <QMessagebox>
+#include <QMessageBox>
 
 #include "ui_Etemenanki.h"
 #include "Settings.h"
@@ -117,7 +117,7 @@ private:
     QString m_settingsFilePath;
     QString m_logFileName = "Etemenanki.log";
     QString m_logFilePath;
-    QUrl m_githubUrl = "https://github.com/MjnMixael/Etemenanki";
+    QUrl m_githubUrl = QUrl("https://github.com/MjnMixael/Etemenanki");
     int m_regexCheckWidth = 23;
     int m_regexPositionWidth = 40;
 

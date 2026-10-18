@@ -1,3 +1,10 @@
+# Legacy MSBuild / Visual Studio
 x64/
 .vs/
-Etemenanki/Etemenanki.vcxproj.user
+
+# CMake build trees (CMakePresets uses build/<preset>; VS "Open Folder" uses out/)
+build/
+out/
+
+# Per-developer CMake presets (e.g. local Qt path via CMAKE_PREFIX_PATH)
+CMakeUserPresets.json
