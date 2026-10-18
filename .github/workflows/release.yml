@@ -30,7 +30,7 @@ jobs:
             qt_arch: linux_gcc_64
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # Etemenanki uses only base Qt modules (core/gui/widgets), so no extra
       # modules are installed — this matches the plugin set the app has shipped.
@@ -46,6 +46,7 @@ jobs:
       # ---- Windows -------------------------------------------------------
       # Put MSVC (cl/link) on PATH for whatever VS the runner ships, so we're
       # not pinned to a specific Visual Studio generator version.
+      # (No Node 24 release yet; GitHub runs it on Node 24 regardless.)
       - name: Set up MSVC (Windows)
         if: runner.os == 'Windows'
         uses: ilammy/msvc-dev-cmd@v1
@@ -80,7 +81,7 @@ jobs:
 
       - name: Upload build artifact (Windows)
         if: runner.os == 'Windows'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: Etemenanki-win64
           path: ${{ env.ASSET }}
@@ -159,7 +160,7 @@ jobs:
 
       - name: Upload build artifacts (Linux)
         if: runner.os == 'Linux'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: Etemenanki-linux
           path: |
@@ -174,13 +175,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download all build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: dist
           merge-multiple: true
 
       - name: Publish to Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: dist/**
           draft: false
@@ -210,7 +211,7 @@ jobs:
 
       - name: Checkout Knossos tool repo (upstream)
         if: steps.gate.outputs.enabled == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: KnossosNET/Knet-Tool-Repo
           ref: main
@@ -306,7 +307,7 @@ jobs:
 
       - name: Create pull request
         if: steps.gate.outputs.enabled == 'true'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.KNOSSOS_PAT }}
           path: knossos
