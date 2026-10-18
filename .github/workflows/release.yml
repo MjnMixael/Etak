@@ -48,15 +48,21 @@ jobs:
           cache: true
 
       # ---- Windows -------------------------------------------------------
+      # Put MSVC (cl/link) on PATH for whatever VS the runner ships, so we're
+      # not pinned to a specific Visual Studio generator version.
+      - name: Set up MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
       - name: Configure & build (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          # The Visual Studio generator finds MSVC itself (no dev-prompt needed)
-          # and produces the same .slnx/.vcxproj a developer gets locally.
-          cmake -S . -B build -G "Visual Studio 17 2022" -A x64 `
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release `
             -DCMAKE_PREFIX_PATH="$env:QT_ROOT_DIR"
-          cmake --build build --config Release --parallel
+          cmake --build build --parallel
 
       - name: Package with windeployqt (Windows)
         if: runner.os == 'Windows'
@@ -67,7 +73,7 @@ jobs:
           $name = if ($env:GITHUB_REF_NAME) { $env:GITHUB_REF_NAME } else { "dev" }
           $staging = "dist\Release"
           New-Item -ItemType Directory -Force -Path $staging | Out-Null
-          Copy-Item "build\Release\Etemenanki.exe" $staging
+          Copy-Item "build\Etemenanki.exe" $staging
           & "$env:QT_ROOT_DIR\bin\windeployqt.exe" `
             --release --no-translations --compiler-runtime `
             "$staging\Etemenanki.exe"

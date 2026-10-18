@@ -17,7 +17,7 @@
 #include <QStandardPaths>
 #include <QDesktopServices>
 #include <QFileDialog>
-#include <QMessagebox>
+#include <QMessageBox>
 
 #include "ui_Etemenanki.h"
 #include "Settings.h"
