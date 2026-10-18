@@ -5,6 +5,10 @@ name: Release
 # update the Knossos tool repo so the new version goes live.
 on:
   push:
+    branches:
+      # TEMPORARY: dry-run CI on this branch (build + artifacts, no publish).
+      # Remove before merging to main.
+      - 'cmake-cross-platform'
     tags:
       - 'Version_*'
   # Manual dry-run from the Actions tab: builds both OSes and uploads artifacts,
