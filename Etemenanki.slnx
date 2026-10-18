@@ -2,5 +2,5 @@
   <Configurations>
     <Platform Name="x64" />
   </Configurations>
-  <Project Path="Etemenanki/Etemenanki.vcxproj" />
+  <Project Path="Etemenanki/Etemenanki.vcxproj" Id="4543b0c0-b877-4dfe-9c00-fafd47f279c4" />
 </Solution>
