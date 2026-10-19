@@ -40,6 +40,10 @@ qt_add_executable(Etemenanki WIN32
 
 target_compile_features(Etemenanki PRIVATE cxx_std_17)
 
+# Make F5 in the generated VS solution launch the app, not the non-runnable
+# ALL_BUILD utility target (ignored by non-VS generators).
+set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT Etemenanki)
+
 # The sources include each other and the generated ui_*.h by bare name; this
 # also puts the .rc's directory on the resource-compiler include path so its
 # "Etemenanki.ico" reference resolves.
