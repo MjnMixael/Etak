@@ -1,4 +1,5 @@
 <RCC>
     <qresource prefix="Etak">
+        <file>icon.png</file>
     </qresource>
 </RCC>

@@ -13,8 +13,12 @@ project(Etak
 
 find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Widgets)
 
-# AUTOMOC / AUTOUIC / AUTORCC, sane defaults, GUI app helpers.
+# AUTOMOC / AUTOUIC, sane defaults, GUI app helpers. Note: this does NOT turn
+# on AUTORCC, so a listed .qrc would silently embed nothing — enable it below.
 qt_standard_project_setup()
+
+# Compile Etak.qrc (the embedded app icon used by the window and splash).
+set(CMAKE_AUTORCC ON)
 
 qt_add_executable(Etak WIN32
     Etak/main.cpp
