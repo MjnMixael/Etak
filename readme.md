@@ -17,6 +17,33 @@ Etemenanki is a tool meant to facilitate creating a full tstrings.tbl for games 
 
 Etemenanki uses [QT Designer](https://www.qt.io/product/ui-design-tools) for it's UI development.
 
+## Building
+
+Etemenanki builds with CMake and Qt 6.8.3 (Core, Gui, Widgets). It builds on Windows (MSVC) and Linux (GCC/Clang); the GitHub Actions workflow builds and packages both.
+
+### Requirements
+
+- CMake 3.21+
+- Qt 6.8.3
+- A C++17 compiler — MSVC (Visual Studio 2026) on Windows, GCC or Clang on Linux
+
+### Visual Studio 2026
+
+Generate the solution against your Qt install, then open it:
+
+```bash
+cmake -S . -B build/vs2026 -G "Visual Studio 18 2026" -A x64 -DCMAKE_PREFIX_PATH=C:/Qt6/6.8.3/msvc2022_64
+```
+
+Open `build\vs2026\Etemenanki.slnx` and build/run with F5 (Etemenanki is the default startup project). Alternatively, use **File → Open → Folder** on the repo root — VS reads `CMakePresets.json` directly.
+
+### Command line (Linux or Windows)
+
+```bash
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/path/to/Qt/6.8.3/gcc_64
+cmake --build build
+```
+
 ## Usage
 
 <img src="Preview.png">
