@@ -220,62 +220,6 @@ jobs:
           token: ${{ secrets.KNOSSOS_PAT }}
           path: knossos
 
-      # ONE-TIME RENAME (Etemenanki -> Etak). Knossos tools are keyed by name,
-      # so a rename is a remove of the old entry plus an add of the new one. The
-      # shared "Update knet_tools.json" step below is left untouched (it creates
-      # the Etak entry since Etak isn't listed yet), so the workflow still copies
-      # cleanly to new apps. DELETE THIS STEP after the 2.0.0 rename release.
-      # Note: existing Etemenanki installs will not auto-migrate to Etak.
-      - name: Remove old Etemenanki entry (rename)
-        if: steps.gate.outputs.enabled == 'true'
-        working-directory: knossos
-        env:
-          REMOVE_NAME: "Etemenanki"
-        run: |
-          set -euo pipefail
-          python3 - "knet_tools.json" <<'PY'
-          import io, os, re, json, sys
-          path = sys.argv[1]
-          name = os.environ["REMOVE_NAME"]
-          s = io.open(path, encoding="utf-8").read()
-          m = re.search(r'"name"\s*:\s*"%s"' % re.escape(name), s)
-          if not m:
-              sys.stderr.write("note: %s not present; nothing to remove\n" % name)
-          else:
-              # Brace-match the containing object (same walk as the patch path).
-              start = s.rfind("{", 0, m.start())
-              depth, i, end = 0, start, None
-              while i < len(s):
-                  if s[i] == "{":
-                      depth += 1
-                  elif s[i] == "}":
-                      depth -= 1
-                      if depth == 0:
-                          end = i + 1
-                          break
-                  i += 1
-              if end is None:
-                  sys.exit("could not find end of %s object" % name)
-              # Drop the object plus one adjacent comma so the array stays valid.
-              j = start - 1
-              while j >= 0 and s[j] in " \t\r\n":
-                  j -= 1
-              if s[j] == ",":            # not first element: take preceding comma
-                  s2 = s[:j] + s[end:]
-              else:                      # first element: take following comma
-                  k = end
-                  while k < len(s) and s[k] in " \t\r\n":
-                      k += 1
-                  if k < len(s) and s[k] == ",":
-                      end = k + 1
-                  s2 = s[:j + 1] + s[end:]
-              data = json.loads(s2)      # fail loudly if we produced invalid JSON
-              assert not [x for x in data if x.get("name") == name], "still present"
-              io.open(path, "w", encoding="utf-8", newline="").write(s2)
-              sys.stderr.write("removed %s\n" % name)
-          PY
-          git --no-pager diff -- knet_tools.json
-
       - name: Update knet_tools.json
         if: steps.gate.outputs.enabled == 'true'
         working-directory: knossos
@@ -403,14 +347,10 @@ jobs:
           push-to-fork: MjnMixael/Knet-Tool-Repo
           branch: etak-${{ github.ref_name }}
           base: main
-          commit-message: "Rename Etemenanki to Etak (${{ github.ref_name }})"
-          title: "Rename Etemenanki to Etak (${{ github.ref_name }})"
+          commit-message: "Update Etak to ${{ github.ref_name }}"
+          title: "Update Etak to ${{ github.ref_name }}"
           body: |
-            Renames **Etemenanki** to **Etak** (`${{ github.ref_name }}`).
-
-            Knossos tools are keyed by name, so this removes the old `Etemenanki`
-            entry and adds a new `Etak` entry in its place. Existing Etemenanki
-            installs will not auto-migrate — this is a deliberate, accepted tradeoff.
+            Automated update of **Etak** to `${{ github.ref_name }}`.
 
             - Release: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}
 
