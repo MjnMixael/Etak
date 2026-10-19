@@ -113,7 +113,7 @@ private:
 
     // Generic UI and application settings
     QString m_title = "Etak";
-    QString m_version = "v.1.6.0";
+    QString m_version = "v.2.0.0";
     QString m_description = "A translation tool for FreespaceOpen!";
     QString m_settingsFileName = "settings.json";
     QString m_settingsFilePath;

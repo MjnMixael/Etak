@@ -7,7 +7,7 @@
 cmake_minimum_required(VERSION 3.21)
 
 project(Etak
-    VERSION 1.6.0
+    VERSION 2.0.0
     DESCRIPTION "A translation tool for FreeSpace Open"
     LANGUAGES CXX)
 
