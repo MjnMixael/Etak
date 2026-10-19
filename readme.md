@@ -103,5 +103,5 @@ Etemenanki is built purely on Qt 6 and has no additional third-party libraries.
 
 # Credits
 
-Etemenanki is developed by MjnMixael.
+Etemenanki is developed by Mike Nelson.
 Licensed under the GNU GPL v3. See [LICENSE](LICENSE.md).
