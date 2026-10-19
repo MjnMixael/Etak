@@ -15,6 +15,8 @@
 #include <QJsonValue>
 #include <QJsonArray>
 #include <QStandardPaths>
+#include <QDirIterator>
+#include <QFileInfo>
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -61,7 +63,7 @@ public:
     QVector<XstrPair> m_preloadedPairs;
 
     //Public variables
-    QString m_appDataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/Etak/";
+    QString m_appDataPath;  // resolved in the constructor (roaming root + "/Etak/")
     QString m_preloadFilename = "xstr_pairs.json";
 
 public slots:

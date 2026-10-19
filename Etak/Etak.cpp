@@ -18,23 +18,44 @@ Etak::Etak(QWidget *parent)
     QString windowString = m_title + " " + m_version + " - " + m_description;
     setWindowTitle(windowString);
 
-    // One-time migration of the user data folder from the pre-rebrand name
-    // (.../Etemenanki/ -> .../Etak/). Runs before any settings/log path is
-    // derived from m_appDataPath, so existing settings.json, xstr_pairs.json,
-    // and the log carry over on the first run of the renamed app. If the new
-    // folder already exists, it wins and the legacy folder is left untouched.
-    {
-        const QString legacyAppDataPath =
-            QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/Etemenanki/";
-        if (legacyAppDataPath != m_appDataPath
-            && QDir(legacyAppDataPath).exists()
-            && !QDir(m_appDataPath).exists()) {
-            QDir().rename(legacyAppDataPath, m_appDataPath);
-        }
+    // Resolve a deterministic, single-level data directory in the roaming
+    // profile. Qt's AppDataLocation repeats the app name on some builds
+    // (e.g. .../Roaming/Etak/Etak), so strip those trailing segments back to
+    // the roaming root and append our own single "Etak" folder. This keeps the
+    // path stable regardless of the Qt version the app was built with.
+    QDir dataDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+    for (int i = 0; i < 2 && dataDir.dirName() == "Etak"; ++i) {
+        dataDir.cdUp();
     }
+    const QString roamingRoot = dataDir.absolutePath();
+    m_appDataPath = roamingRoot + "/Etak/";
 
     m_settingsFilePath = m_appDataPath + m_settingsFileName;
     m_logFilePath = m_appDataPath + m_logFileName;
+
+    // One-time import of a pre-rebrand install's configuration. The old build
+    // stored data under .../Roaming/Etemenanki/, nested an app-version-dependent
+    // number of levels deep, so locate settings.json wherever it lives under
+    // that root and copy the user's settings + preload pairs across on first
+    // run. An existing Etak config is never overwritten.
+    if (!QFile::exists(m_settingsFilePath)) {
+        const QString legacyRoot = roamingRoot + "/Etemenanki";
+        if (QDir(legacyRoot).exists()) {
+            QDirIterator it(legacyRoot, QStringList{ m_settingsFileName },
+                            QDir::Files, QDirIterator::Subdirectories);
+            if (it.hasNext()) {
+                const QString legacyDir = QFileInfo(it.next()).absolutePath();
+                QDir().mkpath(m_appDataPath);
+                for (const QString& name : { m_settingsFileName, m_preloadFilename }) {
+                    const QString src = legacyDir + "/" + name;
+                    const QString dst = m_appDataPath + name;
+                    if (QFile::exists(src) && !QFile::exists(dst)) {
+                        QFile::copy(src, dst);
+                    }
+                }
+            }
+        }
+    }
 
     // Set some ui configurations
     ui.offset_line_edit->setValidator(new QIntValidator(0, INT_MAX, this));
