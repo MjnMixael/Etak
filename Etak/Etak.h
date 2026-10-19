@@ -19,19 +19,19 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
-#include "ui_Etemenanki.h"
+#include "ui_Etak.h"
 #include "Settings.h"
 #include "IgnoreFiles.h"
 #include "IgnoreIds.h"
 #include "PreloadPairs.h"
 #include "xstr.h"
 
-class Etemenanki : public QMainWindow
+class Etak : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    Etemenanki(QWidget *parent = nullptr);
+    Etak(QWidget *parent = nullptr);
 
     // Pass controls from Settings.cpp
     void setComprehensive(bool val);
@@ -61,7 +61,7 @@ public:
     QVector<XstrPair> m_preloadedPairs;
 
     //Public variables
-    QString m_appDataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/Etemenanki/";
+    QString m_appDataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/Etak/";
     QString m_preloadFilename = "xstr_pairs.json";
 
 public slots:
@@ -107,17 +107,17 @@ protected:
     void closeEvent(QCloseEvent* event) override;
 
 private:
-    Ui::EtemenankiClass ui;
+    Ui::EtakClass ui;
 
     // Generic UI and application settings
-    QString m_title = "Etemenanki";
+    QString m_title = "Etak";
     QString m_version = "v.1.6.0";
     QString m_description = "A translation tool for FreespaceOpen!";
     QString m_settingsFileName = "settings.json";
     QString m_settingsFilePath;
-    QString m_logFileName = "Etemenanki.log";
+    QString m_logFileName = "Etak.log";
     QString m_logFilePath;
-    QUrl m_githubUrl = QUrl("https://github.com/MjnMixael/Etemenanki");
+    QUrl m_githubUrl = QUrl("https://github.com/MjnMixael/Etak");
     int m_regexCheckWidth = 23;
     int m_regexPositionWidth = 40;
 

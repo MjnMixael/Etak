@@ -5,7 +5,7 @@
  *
 */
 
-#include "Etemenanki.h"
+#include "Etak.h"
 #include <QSharedMemory>
 #include <QApplication>
 
@@ -14,14 +14,14 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QSharedMemory sharedMemory;
-    sharedMemory.setKey("EtemenankiRunning");
+    sharedMemory.setKey("EtakRunning");
 
     if (!sharedMemory.create(1)) {
         // Another instance is already running so end here
         return 1;
     }
 
-    Etemenanki w;
+    Etak w;
     w.show();
     return a.exec();
 }

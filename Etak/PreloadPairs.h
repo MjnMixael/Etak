@@ -10,14 +10,14 @@
 #include <QDialog>
 #include "ui_PreloadPairs.h"
 
-#include "Etemenanki.h"
+#include "Etak.h"
 
-class Etemenanki;
+class Etak;
 
 class PreloadPairsDialog : public QDialog {
     Q_OBJECT
 public:
-    explicit PreloadPairsDialog(Etemenanki* etemenanki, QWidget* parent = nullptr);
+    explicit PreloadPairsDialog(Etak* etak, QWidget* parent = nullptr);
 public slots:
     void accept() override;
 
@@ -33,7 +33,7 @@ public slots:
     void on_preload_import_button_clicked();
 private:
     Ui::PreloadPairsDialog ui;
-    Etemenanki* m_etemenanki;
+    Etak* m_etak;
 
     int m_preloadIdWidth = 100;
 

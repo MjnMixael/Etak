@@ -5,11 +5,11 @@
  *
 */
 
-#include "Etemenanki.h"
+#include "Etak.h"
 
 bool g_continueProcessing = false;
 
-Etemenanki::Etemenanki(QWidget *parent)
+Etak::Etak(QWidget *parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
@@ -17,6 +17,21 @@ Etemenanki::Etemenanki(QWidget *parent)
     setWindowFlags(Qt::Window | Qt::MSWindowsFixedSizeDialogHint);
     QString windowString = m_title + " " + m_version + " - " + m_description;
     setWindowTitle(windowString);
+
+    // One-time migration of the user data folder from the pre-rebrand name
+    // (.../Etemenanki/ -> .../Etak/). Runs before any settings/log path is
+    // derived from m_appDataPath, so existing settings.json, xstr_pairs.json,
+    // and the log carry over on the first run of the renamed app. If the new
+    // folder already exists, it wins and the legacy folder is left untouched.
+    {
+        const QString legacyAppDataPath =
+            QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/Etemenanki/";
+        if (legacyAppDataPath != m_appDataPath
+            && QDir(legacyAppDataPath).exists()
+            && !QDir(m_appDataPath).exists()) {
+            QDir().rename(legacyAppDataPath, m_appDataPath);
+        }
+    }
 
     m_settingsFilePath = m_appDataPath + m_settingsFileName;
     m_logFilePath = m_appDataPath + m_logFileName;
@@ -49,46 +64,46 @@ Etemenanki::Etemenanki(QWidget *parent)
 
     //Create the processor thread
     m_xstrProcessor = new XstrProcessor(this);
-    connect(m_xstrProcessor, &XstrProcessor::update_terminal_text, this, &Etemenanki::update_terminal_output);
+    connect(m_xstrProcessor, &XstrProcessor::update_terminal_text, this, &Etak::update_terminal_output);
 
     m_xstrProcessor->setLogFilePath(m_logFilePath);
 
     update_terminal_output("Ready!");
 }
 
-void Etemenanki::run_xstr() {
+void Etak::run_xstr() {
     m_xstrProcessor->run();
 }
 
-void Etemenanki::ui_save_settings() {
+void Etak::ui_save_settings() {
     saveSettings();
 }
 
-void Etemenanki::ui_open_documentation() {
+void Etak::ui_open_documentation() {
     QDesktopServices::openUrl(m_githubUrl);
 }
 
-void Etemenanki::ui_open_preferences() {
+void Etak::ui_open_preferences() {
     SettingsDialog dialog(this, this);
     dialog.exec();
 }
 
-void Etemenanki::ui_open_ignore_files() {
+void Etak::ui_open_ignore_files() {
     IgnoreFilesDialog dialog(this, this);
     dialog.exec();
 }
 
-void Etemenanki::ui_open_ignore_ids() {
+void Etak::ui_open_ignore_ids() {
     IgnoreIdsDialog dialog(this, this);
     dialog.exec();
 }
 
-void Etemenanki::ui_open_preload_pairs() {
+void Etak::ui_open_preload_pairs() {
     PreloadPairsDialog dialog(this, this);
     dialog.exec();
 }
 
-void Etemenanki::closeEvent(QCloseEvent* event) {
+void Etak::closeEvent(QCloseEvent* event) {
     if (m_xstrProcessor->isRunning()) {
         g_continueProcessing = false;
         resetInterface();
@@ -97,7 +112,7 @@ void Etemenanki::closeEvent(QCloseEvent* event) {
     saveSettings();
 }
 
-void Etemenanki::resetInterface() {
+void Etak::resetInterface() {
     ui.begin_button->setEnabled(false);
     ui.begin_button->setText("Waiting...");
 
@@ -109,57 +124,57 @@ void Etemenanki::resetInterface() {
     toggleControls(true);
 }
 
-void Etemenanki::setComprehensive(bool val) {
+void Etak::setComprehensive(bool val) {
     m_comprehensiveScan = val;
 }
-bool Etemenanki::getComprehensive() {
+bool Etak::getComprehensive() {
     return m_comprehensiveScan;
 }
 
-void Etemenanki::setFillInIds(bool val) {
+void Etak::setFillInIds(bool val) {
     m_fillInIds = val;
 }
-bool Etemenanki::getFillInIds() {
+bool Etak::getFillInIds() {
     return m_fillInIds;
 }
 
-void Etemenanki::setSortingType(int val) {
+void Etak::setSortingType(int val) {
     m_sortingType = val;
 }
-int Etemenanki::getSortingType() {
+int Etak::getSortingType() {
     return m_sortingType;
 }
 
-void Etemenanki::setHeaderAnnotations(bool val) {
+void Etak::setHeaderAnnotations(bool val) {
     m_headerAnnotations = val;
 }
-bool Etemenanki::getHeaderAnnotations() {
+bool Etak::getHeaderAnnotations() {
     return m_headerAnnotations;
 }
 
-void Etemenanki::setVerboseAnnotations(bool val) {
+void Etak::setVerboseAnnotations(bool val) {
     m_verboseAnnotations = val;
 }
-bool Etemenanki::getVerboseAnnotations() {
+bool Etak::getVerboseAnnotations() {
     return m_verboseAnnotations;
 }
 
-void Etemenanki::setCaseInsensitive(bool val) {
+void Etak::setCaseInsensitive(bool val) {
     m_caseInsensitive = val;
 }
-bool Etemenanki::getCaseInsensitive() {
+bool Etak::getCaseInsensitive() {
     return m_caseInsensitive;
 }
 
-void Etemenanki::toggleOffsetControl(bool val) {
+void Etak::toggleOffsetControl(bool val) {
     ui.offset_line_edit->setEnabled(val);
 }
 
-QString Etemenanki::getCurrentDirectory() {
+QString Etak::getCurrentDirectory() {
     return ui.directory_line_edit->text();
 }
 
-void Etemenanki::on_directory_browse_button_clicked() {
+void Etak::on_directory_browse_button_clicked() {
     QString directory = QFileDialog::getExistingDirectory(this, tr("Select Directory"),
         ui.directory_line_edit->text(),
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
@@ -168,7 +183,7 @@ void Etemenanki::on_directory_browse_button_clicked() {
     }
 }
 
-void Etemenanki::on_output_directory_browse_button_clicked() {
+void Etak::on_output_directory_browse_button_clicked() {
     QString directory = QFileDialog::getExistingDirectory(this, tr("Select Directory"),
         ui.output_directory_line_edit->text(),
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
@@ -177,7 +192,7 @@ void Etemenanki::on_output_directory_browse_button_clicked() {
     }
 }
 
-bool Etemenanki::itemExists(QListWidget* listWidget, const QString& textToCheck) {
+bool Etak::itemExists(QListWidget* listWidget, const QString& textToCheck) {
     for (int i = 0; i < listWidget->count(); ++i) {
         QListWidgetItem* item = listWidget->item(i);
         if (item && item->text() == textToCheck) {
@@ -187,13 +202,13 @@ bool Etemenanki::itemExists(QListWidget* listWidget, const QString& textToCheck)
     return false;  // Item does not exist
 }
 
-bool Etemenanki::itemExists(QTableWidget* tableWidget, const QString& textToCheck) {
+bool Etak::itemExists(QTableWidget* tableWidget, const QString& textToCheck) {
     QList<QTableWidgetItem*> items = tableWidget->findItems(textToCheck, Qt::MatchExactly);
 
     return !items.isEmpty();  // If items list is not empty, the item exists
 }
 
-void Etemenanki::addFileExtension(QString ext) {
+void Etak::addFileExtension(QString ext) {
     if (ext.at(0) != ".") {
         ext.prepend(".");
     }
@@ -205,14 +220,14 @@ void Etemenanki::addFileExtension(QString ext) {
     }
 }
 
-void Etemenanki::resetFileExtensionInput() {
+void Etak::resetFileExtensionInput() {
     ui.files_line_edit->clear();
     ui.files_update_button->setEnabled(false);
     ui.files_remove_button->setEnabled(false);
     ui.files_list_widget->clearSelection();
 }
 
-void Etemenanki::on_files_add_button_clicked() {
+void Etak::on_files_add_button_clicked() {
     QString ext = ui.files_line_edit->text();
 
     if (ext.isEmpty()) {
@@ -222,7 +237,7 @@ void Etemenanki::on_files_add_button_clicked() {
     addFileExtension(ext);
 }
 
-void Etemenanki::on_files_update_button_clicked() {
+void Etak::on_files_update_button_clicked() {
     int i = ui.files_list_widget->currentRow();
     QString ext = ui.files_line_edit->text();
 
@@ -242,26 +257,26 @@ void Etemenanki::on_files_update_button_clicked() {
     }
 }
 
-void Etemenanki::on_files_remove_button_clicked() {
+void Etak::on_files_remove_button_clicked() {
     ui.files_list_widget->takeItem(ui.files_list_widget->currentRow());
     resetFileExtensionInput();
     update_terminal_output("File extension removed!");
 }
 
-void Etemenanki::on_files_clear_button_clicked() {
+void Etak::on_files_clear_button_clicked() {
     ui.files_list_widget->clear();
     resetFileExtensionInput();
     update_terminal_output("File extensions cleared!");
 }
 
-void Etemenanki::on_files_list_widget_clicked() {
+void Etak::on_files_list_widget_clicked() {
     int i = ui.files_list_widget->currentRow();
     ui.files_line_edit->setText(ui.files_list_widget->item(i)->text());
     ui.files_update_button->setEnabled(true);
     ui.files_remove_button->setEnabled(true);
 }
 
-bool Etemenanki::addRegexRow(QString pattern, QString string_pos, QString id_pos, bool checked, int row) {
+bool Etak::addRegexRow(QString pattern, QString string_pos, QString id_pos, bool checked, int row) {
     if (pattern.isEmpty()) {
         return false;
     }
@@ -325,7 +340,7 @@ bool Etemenanki::addRegexRow(QString pattern, QString string_pos, QString id_pos
     return false;
 }
 
-void Etemenanki::resetRegexInput() {
+void Etak::resetRegexInput() {
     ui.regex_line_edit->clear();
     ui.position_string_line_edit->clear();
     ui.position_id_line_edit->clear();
@@ -334,7 +349,7 @@ void Etemenanki::resetRegexInput() {
     ui.regex_table_widget->clearSelection();
 }
 
-void Etemenanki::on_regex_add_button_clicked() {
+void Etak::on_regex_add_button_clicked() {
     QString regex = ui.regex_line_edit->text();
     QString string_pos = ui.position_string_line_edit->text();
     QString id_pos = ui.position_id_line_edit->text();
@@ -347,7 +362,7 @@ void Etemenanki::on_regex_add_button_clicked() {
     }
 }
 
-void Etemenanki::on_regex_update_button_clicked() {
+void Etak::on_regex_update_button_clicked() {
     int i = ui.regex_table_widget->currentRow();
     QString regex = ui.regex_line_edit->text();
     QString string_pos = ui.position_string_line_edit->text();
@@ -365,20 +380,20 @@ void Etemenanki::on_regex_update_button_clicked() {
     }
 }
 
-void Etemenanki::on_regex_remove_button_clicked() {
+void Etak::on_regex_remove_button_clicked() {
     ui.regex_table_widget->removeRow(ui.regex_table_widget->currentRow());
     resetRegexInput();
     update_terminal_output("Regular expression removed!");
 }
 
-void Etemenanki::on_regex_clear_button_clicked() {
+void Etak::on_regex_clear_button_clicked() {
     ui.regex_table_widget->clear();
     ui.regex_table_widget->setRowCount(0);
     resetRegexInput();
     update_terminal_output("Regular expressions cleared!");
 }
 
-void Etemenanki::on_regex_table_widget_clicked() {
+void Etak::on_regex_table_widget_clicked() {
     int i = ui.regex_table_widget->currentRow();
     if (i >= 0) {
         ui.regex_line_edit->setText(ui.regex_table_widget->item(i, 1)->text());
@@ -389,7 +404,7 @@ void Etemenanki::on_regex_table_widget_clicked() {
     }
 }
 
-bool Etemenanki::isRowChecked(int row) {
+bool Etak::isRowChecked(int row) {
     QTableWidgetItem* item = ui.regex_table_widget->item(row, 0);
     if (item) {
         return item->checkState() == Qt::Checked;
@@ -397,11 +412,11 @@ bool Etemenanki::isRowChecked(int row) {
     return false;
 }
 
-void Etemenanki::on_read_only_checkbox_clicked() {
+void Etak::on_read_only_checkbox_clicked() {
     m_readOnly = ui.read_only_checkbox->isChecked();
 }
 
-void Etemenanki::loadPreloadedPairs() {
+void Etak::loadPreloadedPairs() {
     QString filepath = m_appDataPath + m_preloadFilename;
     QDir().mkpath(QFileInfo(filepath).absolutePath()); // Ensure the directory exists
     QFile file(filepath);
@@ -448,7 +463,7 @@ void Etemenanki::loadPreloadedPairs() {
     waitDialog.accept();
 }
 
-void Etemenanki::on_begin_button_clicked() {
+void Etak::on_begin_button_clicked() {
     if (m_xstrProcessor->isRunning()) {
         ui.begin_button->setEnabled(false); // Prevent double clicks
         g_continueProcessing = false;
@@ -552,7 +567,7 @@ void Etemenanki::on_begin_button_clicked() {
 
     qDebug() << "Processing in thread:" << QThread::currentThreadId();
 
-    auto function = std::bind(&Etemenanki::run_xstr, this);
+    auto function = std::bind(&Etak::run_xstr, this);
     m_xstrThread = QThread::create(function);
 
     connect(m_xstrThread, &QThread::finished, this, [this]() {
@@ -567,7 +582,7 @@ void Etemenanki::on_begin_button_clicked() {
     toggleControls(false);
 }
 
-void Etemenanki::toggleControls(bool val) {
+void Etak::toggleControls(bool val) {
     ui.directory_line_edit->setEnabled(val);
     ui.files_line_edit->setEnabled(val);
     ui.files_list_widget->setEnabled(val);
@@ -592,11 +607,11 @@ void Etemenanki::toggleControls(bool val) {
     ui.actionIgnore_Files->setEnabled(val);
 }
 
-void Etemenanki::update_terminal_output(const QString& text) {
+void Etak::update_terminal_output(const QString& text) {
     ui.terminal_output->setText(text);
 }
 
-void Etemenanki::loadSettings() {
+void Etak::loadSettings() {
     QDir().mkpath(QFileInfo(m_settingsFilePath).absolutePath()); // Ensure the directory exists
     QFile file(m_settingsFilePath);
     
@@ -675,7 +690,7 @@ void Etemenanki::loadSettings() {
     file.close();
 }
 
-void Etemenanki::saveSettings() {
+void Etak::saveSettings() {
     QFile file(m_settingsFilePath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         update_terminal_output("Saving failed. Couldn't open save file...");

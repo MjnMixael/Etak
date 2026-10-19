@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>EtemenankiClass</class>
- <widget class="QMainWindow" name="EtemenankiClass">
+ <class>EtakClass</class>
+ <widget class="QMainWindow" name="EtakClass">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Etemenanki</string>
+   <string>Etak</string>
   </property>
   <property name="autoFillBackground">
    <bool>false</bool>
@@ -885,13 +885,13 @@ Make sure your directory path is correct!</string>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="Etemenanki.qrc"/>
+  <include location="Etak.qrc"/>
  </resources>
  <connections>
   <connection>
    <sender>actionExit</sender>
    <signal>triggered()</signal>
-   <receiver>EtemenankiClass</receiver>
+   <receiver>EtakClass</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -907,7 +907,7 @@ Make sure your directory path is correct!</string>
   <connection>
    <sender>actionSave_Settings</sender>
    <signal>triggered()</signal>
-   <receiver>EtemenankiClass</receiver>
+   <receiver>EtakClass</receiver>
    <slot>ui_save_settings()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -923,7 +923,7 @@ Make sure your directory path is correct!</string>
   <connection>
    <sender>actionAbout</sender>
    <signal>triggered()</signal>
-   <receiver>EtemenankiClass</receiver>
+   <receiver>EtakClass</receiver>
    <slot>ui_open_documentation()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -939,7 +939,7 @@ Make sure your directory path is correct!</string>
   <connection>
    <sender>actionPreferences</sender>
    <signal>triggered()</signal>
-   <receiver>EtemenankiClass</receiver>
+   <receiver>EtakClass</receiver>
    <slot>ui_open_preferences()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -955,7 +955,7 @@ Make sure your directory path is correct!</string>
   <connection>
    <sender>actionIgnore_Files</sender>
    <signal>triggered()</signal>
-   <receiver>EtemenankiClass</receiver>
+   <receiver>EtakClass</receiver>
    <slot>ui_open_ignore_files()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -971,7 +971,7 @@ Make sure your directory path is correct!</string>
   <connection>
    <sender>actionIgnore_Ids</sender>
    <signal>triggered()</signal>
-   <receiver>EtemenankiClass</receiver>
+   <receiver>EtakClass</receiver>
    <slot>ui_open_ignore_ids()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -987,7 +987,7 @@ Make sure your directory path is correct!</string>
   <connection>
    <sender>actionPreload_Pairs</sender>
    <signal>triggered()</signal>
-   <receiver>EtemenankiClass</receiver>
+   <receiver>EtakClass</receiver>
    <slot>ui_open_preload_pairs()</slot>
    <hints>
     <hint type="sourcelabel">

@@ -10,14 +10,14 @@
 #include <QDialog>
 #include "ui_IgnoreFiles.h"
 
-#include "Etemenanki.h"
+#include "Etak.h"
 
-class Etemenanki;
+class Etak;
 
 class IgnoreFilesDialog : public QDialog {
     Q_OBJECT
 public:
-    explicit IgnoreFilesDialog(Etemenanki* etemenanki, QWidget* parent = nullptr);
+    explicit IgnoreFilesDialog(Etak* etak, QWidget* parent = nullptr);
 public slots:
     void accept() override;
 
@@ -29,7 +29,7 @@ public slots:
     void on_ignore_files_list_widget_clicked();
 private:
     Ui::IgnoreFilesDialog ui;
-    Etemenanki* m_etemenanki;
+    Etak* m_etak;
 
     // UI Controls
     void addIgnoreFilesItem(QString path);

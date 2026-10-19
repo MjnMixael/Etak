@@ -7,7 +7,7 @@
 
 #include "IgnoreFiles.h"
 
-PreloadPairsDialog::PreloadPairsDialog(Etemenanki* m_etemenanki, QWidget* parent) : QDialog(parent), m_etemenanki(m_etemenanki) {
+PreloadPairsDialog::PreloadPairsDialog(Etak* m_etak, QWidget* parent) : QDialog(parent), m_etak(m_etak) {
     ui.setupUi(this);
 
     ui.preload_id_line_edit->setValidator(new QIntValidator(0, INT_MAX, this));
@@ -88,8 +88,8 @@ void PreloadPairsDialog::on_preload_table_widget_clicked() {
 
 void PreloadPairsDialog::on_preload_import_button_clicked() {
     QString dir = QDir::homePath();
-    if (m_etemenanki) {
-        QString current = m_etemenanki->getCurrentDirectory();
+    if (m_etak) {
+        QString current = m_etak->getCurrentDirectory();
         if (current.length() > 0) {
             dir = current;
         }
@@ -153,7 +153,7 @@ bool PreloadPairsDialog::addNewPair(QString text, QString id, int row) {
 }
 
 void PreloadPairsDialog::loadPreloadedPairs() {
-    QString filepath = m_etemenanki->m_appDataPath + m_etemenanki->m_preloadFilename;
+    QString filepath = m_etak->m_appDataPath + m_etak->m_preloadFilename;
     QDir().mkpath(QFileInfo(filepath).absolutePath()); // Ensure the directory exists
     QFile file(filepath);
 
@@ -190,10 +190,10 @@ void PreloadPairsDialog::loadPreloadedPairs() {
 }
 
 void PreloadPairsDialog::savePreloadedPairs() {
-    QString filepath = m_etemenanki->m_appDataPath + m_etemenanki->m_preloadFilename;
+    QString filepath = m_etak->m_appDataPath + m_etak->m_preloadFilename;
     QFile file(filepath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        m_etemenanki->update_terminal_output("Unable to create Preload Pair json file!");
+        m_etak->update_terminal_output("Unable to create Preload Pair json file!");
         return;
     }
 

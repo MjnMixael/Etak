@@ -1,6 +1,6 @@
 name: Release
 
-# Build Etemenanki for Windows and Linux and publish binaries to a GitHub
+# Build Etak for Windows and Linux and publish binaries to a GitHub
 # Release when a version tag (e.g. Version_1.5.0) is pushed, then open a PR to
 # update the Knossos tool repo so the new version goes live.
 on:
@@ -34,7 +34,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      # Etemenanki uses only base Qt modules (core/gui/widgets), so no extra
+      # Etak uses only base Qt modules (core/gui/widgets), so no extra
       # modules are installed — this matches the plugin set the app has shipped.
       - name: Install Qt 6.8.3
         uses: jurplel/install-qt-action@v4
@@ -67,17 +67,17 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          # The Knossos entry expects the exe at "Release/Etemenanki.exe" inside
+          # The Knossos entry expects the exe at "Release/Etak.exe" inside
           # the zip, so stage into a Release\ folder and archive that folder.
           $name = if ($env:GITHUB_REF_NAME) { $env:GITHUB_REF_NAME } else { "dev" }
           $staging = "dist\Release"
           New-Item -ItemType Directory -Force -Path $staging | Out-Null
-          Copy-Item "build\Etemenanki.exe" $staging
+          Copy-Item "build\Etak.exe" $staging
           & "$env:QT_ROOT_DIR\bin\windeployqt.exe" `
             --release --no-translations --compiler-runtime `
-            "$staging\Etemenanki.exe"
+            "$staging\Etak.exe"
           Copy-Item "readme.md","LICENSE.md" $staging -ErrorAction SilentlyContinue
-          $zip = "Etemenanki-$name-win64.zip"
+          $zip = "Etak-$name-win64.zip"
           Compress-Archive -Path "dist\Release" -DestinationPath $zip -Force
           "ASSET=$zip" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
 
@@ -85,7 +85,7 @@ jobs:
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v6
         with:
-          name: Etemenanki-win64
+          name: Etak-win64
           path: ${{ env.ASSET }}
 
       # ---- Linux ---------------------------------------------------------
@@ -118,18 +118,18 @@ jobs:
           mkdir -p "$appdir/usr/bin" \
                    "$appdir/usr/share/applications" \
                    "$appdir/usr/share/icons/hicolor/256x256/apps"
-          cp build/Etemenanki "$appdir/usr/bin/Etemenanki"
-          cp Etemenanki/icon.png "$appdir/usr/share/icons/hicolor/256x256/apps/Etemenanki.png"
+          cp build/Etak "$appdir/usr/bin/Etak"
+          cp Etak/icon.png "$appdir/usr/share/icons/hicolor/256x256/apps/Etak.png"
           {
             echo "[Desktop Entry]"
             echo "Type=Application"
-            echo "Name=Etemenanki"
+            echo "Name=Etak"
             echo "Comment=A translation tool for FreeSpace Open"
-            echo "Exec=Etemenanki"
-            echo "Icon=Etemenanki"
+            echo "Exec=Etak"
+            echo "Icon=Etak"
             echo "Categories=Utility;Development;"
             echo "Terminal=false"
-          } > "$appdir/usr/share/applications/Etemenanki.desktop"
+          } > "$appdir/usr/share/applications/Etak.desktop"
 
           curl -fL -o linuxdeploy \
             https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
@@ -145,16 +145,16 @@ jobs:
           ./linuxdeploy --appdir "$appdir" --plugin qt --output appimage
 
           # Rename whatever AppImage was produced to the versioned asset name.
-          built="$(ls -1 Etemenanki*.AppImage | head -n1)"
-          appimage="Etemenanki-${name}-x86_64.AppImage"
+          built="$(ls -1 Etak*.AppImage | head -n1)"
+          appimage="Etak-${name}-x86_64.AppImage"
           if [ "$built" != "$appimage" ]; then mv "$built" "$appimage"; fi
 
           # Knossos Linux package: a zip of the self-contained bundle. linuxdeploy
           # populated AppDir with the binary + bundled Qt and set rpath, so
-          # usr/bin/Etemenanki runs without FUSE. Knossos extracts this zip and
-          # launches executable_path (usr/bin/Etemenanki). -y preserves the
+          # usr/bin/Etak runs without FUSE. Knossos extracts this zip and
+          # launches executable_path (usr/bin/Etak). -y preserves the
           # library symlinks linuxdeploy creates.
-          knzip="Etemenanki-${name}-linux-x86_64.zip"
+          knzip="Etak-${name}-linux-x86_64.zip"
           ( cd "$appdir" && zip -ryq "$GITHUB_WORKSPACE/$knzip" . )
 
           echo "APPIMAGE=$appimage" >> "$GITHUB_ENV"
@@ -164,7 +164,7 @@ jobs:
         if: runner.os == 'Linux'
         uses: actions/upload-artifact@v6
         with:
-          name: Etemenanki-linux
+          name: Etak-linux
           path: |
             ${{ env.APPIMAGE }}
             ${{ env.KNZIP }}
@@ -225,10 +225,10 @@ jobs:
         working-directory: knossos
         env:
           TAG: ${{ github.ref_name }}
-          APP_NAME: "Etemenanki"
+          APP_NAME: "Etak"
           APP_DESC: "A translation tool for FreeSpace Open that generates tstrings.tbl."
-          WIN_EXE_PATH: "Release/Etemenanki.exe"
-          LINUX_EXE_PATH: "usr/bin/Etemenanki"
+          WIN_EXE_PATH: "Release/Etak.exe"
+          LINUX_EXE_PATH: "usr/bin/Etak"
         run: |
           set -euo pipefail
           # Strip any leading tag prefix (V, v, Version_) to get the bare version.
@@ -345,14 +345,14 @@ jobs:
           token: ${{ secrets.KNOSSOS_PAT }}
           path: knossos
           push-to-fork: MjnMixael/Knet-Tool-Repo
-          branch: etemenanki-${{ github.ref_name }}
+          branch: etak-${{ github.ref_name }}
           base: main
-          commit-message: "Update Etemenanki to ${{ github.ref_name }}"
-          title: "Update Etemenanki to ${{ github.ref_name }}"
+          commit-message: "Update Etak to ${{ github.ref_name }}"
+          title: "Update Etak to ${{ github.ref_name }}"
           body: |
-            Automated update of **Etemenanki** to `${{ github.ref_name }}`.
+            Automated update of **Etak** to `${{ github.ref_name }}`.
 
             - Release: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}
 
-            Opened automatically by the Etemenanki release workflow.
+            Opened automatically by the Etak release workflow.
           delete-branch: true

@@ -7,7 +7,7 @@
 
 #include "IgnoreIds.h"
 
-IgnoreIdsDialog::IgnoreIdsDialog(Etemenanki* m_etemenanki, QWidget* parent) : QDialog(parent), m_etemenanki(m_etemenanki) {
+IgnoreIdsDialog::IgnoreIdsDialog(Etak* m_etak, QWidget* parent) : QDialog(parent), m_etak(m_etak) {
     ui.setupUi(this);
 
     ui.ignore_ids_line_edit->setValidator(new QIntValidator(0, INT_MAX, this));
@@ -15,16 +15,16 @@ IgnoreIdsDialog::IgnoreIdsDialog(Etemenanki* m_etemenanki, QWidget* parent) : QD
     ui.ignore_ids_update_button->setEnabled(false);
     ui.ignore_ids_remove_button->setEnabled(false);
 
-    for (int i = 0; i < m_etemenanki->m_ignoredIdsList.size(); i++) {
-        addIgnoreIdsItem(m_etemenanki->m_ignoredIdsList[i]);
+    for (int i = 0; i < m_etak->m_ignoredIdsList.size(); i++) {
+        addIgnoreIdsItem(m_etak->m_ignoredIdsList[i]);
     }
 }
 
 void IgnoreIdsDialog::accept() {
-    if (m_etemenanki) {
-        m_etemenanki->m_ignoredIdsList.clear();
+    if (m_etak) {
+        m_etak->m_ignoredIdsList.clear();
         for (int i = 0; i < ui.ignore_ids_list_widget->count(); ++i) {
-            m_etemenanki->m_ignoredIdsList.push_back(ui.ignore_ids_list_widget->item(i)->text());
+            m_etak->m_ignoredIdsList.push_back(ui.ignore_ids_list_widget->item(i)->text());
         }
     }
 
@@ -32,7 +32,7 @@ void IgnoreIdsDialog::accept() {
 }
 
 void IgnoreIdsDialog::addIgnoreIdsItem(QString id) {
-    if (!Etemenanki::itemExists(ui.ignore_ids_list_widget, id)) {
+    if (!Etak::itemExists(ui.ignore_ids_list_widget, id)) {
         // Make sure a value was entered (the line edit's QIntValidator already
         // restricts input to a non-negative integer).
         if (!id.isEmpty()) {
@@ -68,7 +68,7 @@ void IgnoreIdsDialog::on_ignore_ids_update_button_clicked() {
         return;
     }
 
-    if (!Etemenanki::itemExists(ui.ignore_ids_list_widget, id)) {
+    if (!Etak::itemExists(ui.ignore_ids_list_widget, id)) {
         ui.ignore_ids_list_widget->item(i)->setText(id);
         resetIgnoreIdsInput();
     }

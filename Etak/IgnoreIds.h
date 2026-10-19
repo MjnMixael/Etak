@@ -10,14 +10,14 @@
 #include <QDialog>
 #include "ui_IgnoreIds.h"
 
-#include "Etemenanki.h"
+#include "Etak.h"
 
-class Etemenanki;
+class Etak;
 
 class IgnoreIdsDialog : public QDialog {
     Q_OBJECT
 public:
-    explicit IgnoreIdsDialog(Etemenanki* etemenanki, QWidget* parent = nullptr);
+    explicit IgnoreIdsDialog(Etak* etak, QWidget* parent = nullptr);
 public slots:
     void accept() override;
 
@@ -29,7 +29,7 @@ public slots:
     void on_ignore_ids_list_widget_clicked();
 private:
     Ui::IgnoreIdsDialog ui;
-    Etemenanki* m_etemenanki;
+    Etak* m_etak;
 
     // UI Controls
     void addIgnoreIdsItem(QString id);

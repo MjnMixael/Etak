@@ -7,22 +7,22 @@
 
 #include "IgnoreFiles.h"
 
-IgnoreFilesDialog::IgnoreFilesDialog(Etemenanki* m_etemenanki, QWidget* parent) : QDialog(parent), m_etemenanki(m_etemenanki) {
+IgnoreFilesDialog::IgnoreFilesDialog(Etak* m_etak, QWidget* parent) : QDialog(parent), m_etak(m_etak) {
     ui.setupUi(this);
 
     ui.ignore_files_update_button->setEnabled(false);
     ui.ignore_files_remove_button->setEnabled(false);
 
-    for (int i = 0; i < m_etemenanki->m_ignoredFilesList.size(); i++) {
-        addIgnoreFilesItem(m_etemenanki->m_ignoredFilesList[i]);
+    for (int i = 0; i < m_etak->m_ignoredFilesList.size(); i++) {
+        addIgnoreFilesItem(m_etak->m_ignoredFilesList[i]);
     }
 }
 
 void IgnoreFilesDialog::accept() {
-    if (m_etemenanki) {
-        m_etemenanki->m_ignoredFilesList.clear();
+    if (m_etak) {
+        m_etak->m_ignoredFilesList.clear();
         for (int i = 0; i < ui.ignore_files_list_widget->count(); ++i) {
-            m_etemenanki->m_ignoredFilesList.push_back(ui.ignore_files_list_widget->item(i)->text());
+            m_etak->m_ignoredFilesList.push_back(ui.ignore_files_list_widget->item(i)->text());
         }
     }
 
@@ -30,7 +30,7 @@ void IgnoreFilesDialog::accept() {
 }
 
 void IgnoreFilesDialog::addIgnoreFilesItem(QString path) {
-    if (!Etemenanki::itemExists(ui.ignore_files_list_widget, path)) {
+    if (!Etak::itemExists(ui.ignore_files_list_widget, path)) {
         ui.ignore_files_list_widget->addItem(path);
         ui.ignore_files_line_edit->clear();
     }
@@ -62,7 +62,7 @@ void IgnoreFilesDialog::on_ignore_files_update_button_clicked() {
         return;
     }
 
-    if (!Etemenanki::itemExists(ui.ignore_files_list_widget, path)) {
+    if (!Etak::itemExists(ui.ignore_files_list_widget, path)) {
         ui.ignore_files_list_widget->item(i)->setText(path);
         resetIgnoreFilesInput();
     }
