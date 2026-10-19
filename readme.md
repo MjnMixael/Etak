@@ -17,6 +17,17 @@ Etemenanki is a tool meant to facilitate creating a full tstrings.tbl for games 
 
 Etemenanki uses [QT Designer](https://www.qt.io/product/ui-design-tools) for it's UI development.
 
+## Features
+
+- Recursively scan a directory for translatable strings using configurable regex
+- Generate unique, valid string IDs and write a proper `tstrings.tbl`
+- Fill in missing IDs in sequence, or apply a custom ID offset
+- Read-only mode: report string/ID pairs without modifying source files
+- Ignore specific files or string IDs
+- Output sorting with optional header and verbose annotations
+- Optional case-insensitive string comparison
+- Cross-platform (Windows/Linux)
+
 ## Building
 
 Etemenanki builds with CMake and Qt 6.8.3 (Core, Gui, Widgets). It builds on Windows (MSVC) and Linux (GCC/Clang); the GitHub Actions workflow builds and packages both.
@@ -85,3 +96,12 @@ You may Terminate the process at any time by clicking on Terminate, but the acti
 ## Known Issues
 
 - None currently!
+
+## Dependencies
+
+Etemenanki is built purely on Qt 6 and has no additional third-party libraries.
+
+# Credits
+
+Etemenanki is developed by MjnMixael.
+Licensed under the GNU GPL v3. See [LICENSE](LICENSE.md).
